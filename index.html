@@ -16,45 +16,36 @@
     <div id="root"></div>
     <script type="text/babel">
       const { useEffect, useState } = React;
-      
+
       const App = () => {
-        const [guests, setGuests] = useState([])
+        const [guests, setGuests] = useState([]);
 
-        const fetchUsers = () => {
-          axios.get('/api/guests')
-            .then((response) => {
-              setGuests(response.data)
-            })
-        }
+        const fetchGuests = async () => {
+          const guest = await axios.post('/api/guests', {
+            name: 'Barney',
+            id: '4',
+          }).data;
+          const currentGuests = await axios.get('/api/guests').data;
+          setGuests([guest, ...currentGuests]);
+        };
 
-        fetchUsers()
+        // FIX THIS!   fetchGuests();
 
-        const guestsList = guests.map((guest) => {
-          return (
-            <li key={guest.id}>
-              {guest.name}
-            </li>
-          )
-        })
+        const guestsList = guests.map(guest => {
+          return <li key={guest.id}>{guest.name}</li>;
+        });
         return (
           <div>
             <form id="signIn">
               <input id="userName" type="text" />
               <input id="submitUser" type="submit" value="Sign In" />
             </form>
-            <ul>
-              {
-                guestsList
-              }
-            </ul>
+            <ul>{guestsList}</ul>
           </div>
-        )
+        );
+      };
 
-      }
-
-    
       ReactDOM.render(<App />, document.querySelector('#root'));
     </script>
-
   </body>
 </html>

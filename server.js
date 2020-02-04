@@ -49,10 +49,20 @@ const addGuest = guest => {
 http
   .createServer(function(req, res) {
     if (req.url === '/') {
-      readFile('./index.html').then(html => {
-        res.write(html);
-        res.end();
-      });
+      if (req.method === 'GET') {
+        readFile('./index.html').then(html => {
+          res.write(html);
+          res.end();
+        });
+      } else if (req.url === '/api/guests' && req.method === 'POST') {
+        let buffer = '';
+        req.on('data', chunk => {
+          buffer += chunk;
+        });
+        req.on('end', () => {
+          console.log(buffer);
+        });
+      }
     } else if (req.url === '/api/guests') {
       readFile('./guests.json')
         .then(data => {
